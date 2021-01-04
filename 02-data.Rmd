@@ -4,28 +4,27 @@
 library(here)
 ```
 
-The primary data sources of this project are [*Federal Election Commission*](http://fec.gov/data/) (FEC) and [*Fox News*](https://cookpolitical.com/). FEC gathers and processes campaign finance data and discloses information about the public funding of US presidential elections. Fox News collects and verifies the election returns across the country and is an authoritative source for 2020 Presidential Election votes results.
+The primary data sources of this project are [*Cook Political*](https://cookpolitical.com/) and [*Federal Election Commission*](http://fec.gov/data/) (FEC). Cook Political gathered and reported the 2020 election state-level popular vote share between the two major presidential candidates: Joe Biden and Donald Trump. FEC gathers and processes campaign finance data and discloses information about public funding of US presidential elections. 
 
-We used three major datasets: the [2020 Presidential Election Results dataset](https://www.foxnews.com/elections/2020/general-results) from Fox News, as well as the Contribution Receipts dataset and the Campaign Disbursements dataset from FEC. We each were responsible for downloading one dataset from its data source. More details of the datasets are as following:
+From the above data sources, we collected and used three major datasets: 2020 Presidential Election Results dataset from Cook Political, as well as the Contribution Receipts dataset and the Campaign Disbursements dataset from FEC. Each member in our team was responsible for downloading one dataset from corresponding data sources. More details of the datasets are as following:
 
 
-## U.S. County Level Voting Results of 2020 Presidential Election
+## U.S. State Level Popular Vote Results of 2020 Presidential Election
 
-**Dataset: 2020_US_County_Level_Presidential_Results.csv**
+**Dataset : Popular vote backend_1216.csv**
 
-The dataset contains 10 columns and 3153 records covering the voting results of 2020 presidential election by US county. Since the county level data was not downloadable from the website, we exported this dataset from the github repo [* 2020_US_County_Level_Presidential_Results*](https://github.com/tonmcg/US_County_Level_Election_Results_08-20/blob/master/2020_US_County_Level_Presidential_Results.csv), which contains the latest voting data scraped by Tony McGovern from Fox News website.
-
+The dataset downloaded from [Cook Political](https://cookpolitical.com/2020-national-popular-vote-tracker) contains the 2020 Presidential Election State-Level Popular Vote Share and Result Margin.
 
 ```{r, echo=FALSE, results='asis'}
 DataDescription<- readr::read_csv(here::here("./data/DatasetDescription.csv"))
-knitr::kable(DataDescription[1:10, ], caption = "Major columns used",
+knitr::kable(DataDescription[41:46, ], caption = "Major columns used",
              row.names = F,font_size = 10)
 ```
 
 **Issues with this dataset: **
 
-This dataset is scraped from results published by from Fox News, Politico, and the New York Times. So, it is update in real time and some columns may be changed. Also, the election votes counting and post-election processing are ongoing in several states, so individual statistics we used here might change. 
-
+1. Only the 2020 election popular voting count per candidate per state in this table are considered as the raw data. The rest of the columns in this file such as the vote margin and margin shift are calculated by Cook Political Report based on the past voting result dataset that is not published on their website. So we are not able to verify these numbers exactly using the dataset they provided. But, if necessary, we can collect the historical election popular vote outcome from other data sources (such as Harvard Dataverse) by ourselves and verify those numbers. However, since this Cook Political is a reliable data source, we would consider those values to be trustworthy and leave such verification process for future investigations.
+2. Cook Political updates their data report every day. We have updated the dataset pulled from their website on December 16th to get an up-to-date version. All of the results on the table are shown as certified and finalized. So there should be no more updates that would affect our analysis outcome. 
 
 ## Contribution Receipts
 
@@ -35,16 +34,16 @@ The contribution receipts data on [fec.gov](https://www.fec.gov/) includes all r
  
 Since contributions made in the election year seem to better reflect people's support on their favorite candidate, we applied a date filter to select records with the receipt date falling between 01/01/2020 and 11/03/2020. Due to a huge data volume, we limited data exported to only the contributions with an amount over or equal to 200 dollars and raised by the committees of two final presidential candidates of 2020 Election. The filtered dataset was retrieved from [here](https://www.fec.gov/data/receipts/?recipient_committee_type=P&data_type=processed&committee_id=C00580100&committee_id=C00703975&two_year_transaction_period=2020&min_date=01%2F01%2F2020&max_date=11%2F03%2F2020&is_individual=true&min_amount=200).
 
-The exported dataset has 79 columns and 984,824 records in total. There are 302,731 entries for **Donald J. Trump for President committee** and 682,093 entries for **Biden for President committee**. 
+The exported dataset has 78 columns and 984,824 records in total. There are 302,731 entries for **Donald J. Trump for President committee** and 682,093 entries for **Biden for President committee**. 
 
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(DataDescription[13:27, ], caption = "Major columns used",
+knitr::kable(DataDescription[13:25, ], caption = "Major columns used",
              row.names = F,font_size = 10)
 ```
 
 **Issues with this dataset: **
 
-1. The original dataset is extremely big with over 200 million records, but many of them were very small contribubutions, therefore we filtered out records with amounts less than 200 dollars. As a result, the retrieved dataset might not capture information of all contributors, but at the same time, it largely eliminateds noise that we can focus on contributors who made significant contributions to support their favorite candidate.  
+1. The original dataset is extremely big with over 200 million records, but many of them were very small contribubutions, therefore we filtered out records with amounts less than 200 dollars. As a result, the retrieved dataset might not capture information of all contributors, but at the same time, it largely eliminateds noise that we can focus on contributors who made significant contributions to support their favorite candidate.
 
 2. The dataset contains contribution amounts of negatives and zeros, which are probably relate to unsuccessful transfers.
 
@@ -61,7 +60,7 @@ The Disbursements data from [fec.gov](https://www.fec.gov/) includes the operati
 For this project, we filtered the data to focus on the spending of presidential election committees of 2020 US Election, which the disbursement dates are from 01/01/2020 to 11/03/2020, consistent with the scope of the contribution receipt dataset. The dataset with filters applied was exported from [FEC Official Database](https://www.fec.gov/data/disbursements/?spender_committee_type=P&data_type=processed&min_date=01%2F01%2F2020&max_date=11%2F03%2F2020). The retrieved dataset has 260,587 records and 78 columns.
 
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(DataDescription[30:39, ], caption = "Major columns used",
+knitr::kable(DataDescription[29:37, ], caption = "Major columns used",
              row.names = F,font_size = 10)
 ```
 
@@ -69,5 +68,52 @@ knitr::kable(DataDescription[30:39, ], caption = "Major columns used",
 
 The disbursement data is still getting updated with additive filings of previous disbursements being archived. The total number of records is subject to change, but the change will be trivial compared to the size of the entire dataset. Although this will not affect our analysis or overall conclusion, it is worth attention to the data incompleteness here.
 
+
+## Other Minor Datasets Used
+We also used other auxiliary datasets to develop more comprehensive analysis and visualizations.
+
+**1. U.S. Historical Voting Results from 1976 to 2016: 1976-2016-president.csv** 
+
+The dataset downloaded from [Harvard Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/42MVDX) contains 14 columns and 3740 records about the state level voting results of presidential elections from 1976 to 2016. We used 4 columns from this dataset: `year`, `state`, `party` and `candidatevotes`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(DataDescription[49:52, ], caption = "Major columns used",
+             row.names = F,font_size = 10)
+```
+
+**Issues with this dataset**: Among the four columns that we used, the `party` column has a mixture of String and Boolean data, which we need to uniform the data type of this column. 
+
+**2. U.S. County Level Voting Results of 2020 Presidential Election: 2020_US_County_Level_Presidential_Results.csv**
+
+The dataset contains 10 columns and 3153 records covering the voting results of 2020 presidential election by US county. Since the county level data was not downloadable from the website, we exported this dataset from the github repo [*2020_US_County_Level_Presidential_Results*](https://github.com/tonmcg/US_County_Level_Election_Results_08-20/blob/master/2020_US_County_Level_Presidential_Results.csv), which contains the latest voting data scraped by Tony McGovern from Fox News website.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(DataDescription[1:10, ], caption = "Major columns used",
+             row.names = F,font_size = 10)
+```
+
+**Issues with this dataset**: This dataset is scraped from results published by from Fox News, Politico, and the New York Times, so it kept getting updated and some columns may be changed. Also, the election votes counting and post-election processing are ongoing in several states, so individual statistics we used here might change. 
+
+**3. US Presidential Election vote shares: elections_historic**
+
+This dataset is contained in the `socviz` library in R. It is a dataset of historic US presidential elections from 1824 to 2016, with information about the winner, runner up, and various measures of vote share.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(DataDescription[62:63, ], caption = "Major columns used",
+             row.names = F,font_size = 10)
+```
+
+**Issues with this dataset**: As claimed in the `elections_historic {socviz}` documentation, the data for 2016 are provisional as of early December 2016. So we would need to update the 2016 data to reflect on the final results.
+
+**4. Number of Registered Voters: RegisteredVotersByState.csv**
+
+We collected the dataset from [*World Population Review*](https://worldpopulationreview.com/state-rankings/number-of-registered-voters-by-state). This dataset contains the registered voter count and percentage for each state. The records are all updated after June, 2020.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(DataDescription[55:59, ], caption = "Major columns used",
+             row.names = F,font_size = 10)
+```
+
+**Issues with this dataset**: The data records in this file were not all updated on the same day.
 
 

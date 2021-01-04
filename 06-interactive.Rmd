@@ -3,25 +3,32 @@
 ## Link to the interactive map
 Click [here](https://bl.ocks.org/ybliu9/raw/8d43f3f08508aa7bc70d6dcc40c57f68/11c5476acb05ffe563cdbd156d4fb3ed86f71fe0/) or copy the url: https://bl.ocks.org/ybliu9/raw/8d43f3f08508aa7bc70d6dcc40c57f68/11c5476acb05ffe563cdbd156d4fb3ed86f71fe0/
 
-It may take a couple of seconds to load all features.
+## Descriptions
 
-### Descriptions
+The interactive part of our analysis was built with D3 version 6, which the code has been uploaded to [blockbuilder.org](blockbuilder.org). You can also find code [here](https://github.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/blob/main/interactive-map-2020-election.html) in our github repo. 
+This zoomable cloropleth map shows the number of votes obtained by each party/presidential candidate, their shares of votes, and [margins of victory (MOV)](https://ballotpedia.org/Margin-of-victory_(MOV)) on US county level during 2020 Presidential Election. We used the same voting results data retrieved from Fox News as described in previous sections, but formats of certain columns were changed to adapt to the plot. You can find the data [here](https://github.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/blob/main/data/d3csv/2020_map_d3.csv) under the `data` folder of our repo.
 
-The interactive part of our analysis was built with D3 version 6, which the original code has been uploaded to [](blockbuilder.org). You can also find code [here](https://github.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/blob/main/interactive-map-2020-election.html) in our github repo. 
-This interactive map shows the number of votes obtained by each party/presidential candidate, their shares of votes, and [margins of victory (MOV)](https://ballotpedia.org/Margin-of-victory_(MOV)) on US county level during 2020 Presidential Election. We used the same voting results data retrieved from Fox News as described in previous sections, but formats of certain columns were changed to adapt to the plot. You can find the data [here](https://github.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/blob/main/data/d3csv/2020_map_d3.csv) under the `data` folder of our repo.
-
-### Instructions for using the map:
+## Instructions for using the map
 
 The plot is initialized with a mapping of 2020 US Presidential Election votes with no default county specified. The color of each county reflects the winning party's margin of victory, as scaled on the legend. 
+
 1. Users can scroll up or down to manually zoom in or out the full map. 
 2. Users can click and drag to move the map.
 3. Users can hover the mouse over a county to see county name, vote counts for each party, and the margin. 
-4. Users can select the county of interest by clicking the county on the map. The map will then automatically zoom in on the selected area. 
-Notes: 
-Since the post-election processing is onging and vote counting is not 100% completed in several states, the vote counts are subject to change. Alaska did not return voting results by county, so the data is reported on the state level. 
+4. Users can click on the county of interest, and the map will then automatically zoom in on the selected area. 
 
+Notes: 
+
+- Since the post-election processing is onging and vote counting is not 100% completed in several states, the vote counts are subject to change. Alaska returned voting results by district but not county, so the data is reported on the state level. 
+
+- It may take a couple of seconds to load all features. You should be able to see a map like shown in the screenshot below. If the map does not load properly, please refresh the page a couple of times until you get a map like this:
+
+![](https://raw.githubusercontent.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/main/_bookdown_files/finalproj_files/figure-html/demo.PNG){width=95%}
 
 References:
 
-1. Tony McGovern: US County Level Election Results (https://github.com/tonmcg/US_County_Level_Election_Results_08-20/blob/master/index.html)
-2. Observable: d3-6.0 Migration Guide(https://observablehq.com/@d3/d3v6-migration-guide#events)
+
+1. Tony McGovern: US County Level Election Results with d3.v4 (https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-20/master/index.html)
+Result image:(https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-20/master/img/us_election_results.png)
+2. Observable: d3-6.0 Migration Guide (https://observablehq.com/@d3/d3v6-migration-guide#events)
+

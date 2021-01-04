@@ -1,52 +1,52 @@
-"stateid","state","dem_votes","rep_votes","dem_percent","rep_percent"
-"AZ","Arizona",1672143,1661686,0.49,0.49
-"FL","Florida",5297045,5668731,0.48,0.51
-"GA","Georgia",2474507,2461837,0.5,0.49
-"IA","Iowa",759061,897672,0.45,0.53
-"MI","Michigan",2804040,2649852,0.51,0.48
-"MN","Minnesota",1717049,1484048,0.52,0.45
-"NV","Nevada",703486,669890,0.5,0.48
-"NH","New Hampshire",424921,365654,0.53,0.45
-"NC","North Carolina",2684292,2758775,0.49,0.5
-"OH","Ohio",2679165,3154834,0.45,0.53
-"PA","Pennsylvania",3459923,3378263,0.5,0.49
-"TX","Texas",5259126,5890347,0.47,0.52
-"WI","Wisconsin",1630866,1610184,0.49,0.49
-"AL","Alabama",849624,1441170,0.37,0.62
-"AK","Alaska",153778,189951,0.43,0.53
-"AR","Arkansas",423932,760647,0.35,0.62
-"CA","California",11109764,6005961,0.64,0.34
-"CO","Colorado",1804352,1364607,0.55,0.42
-"CT","Connecticut",1080680,715291,0.59,0.39
-"DE","Delaware",296268,200603,0.59,0.4
-"DC","District of Columbia",317323,18586,0.92,0.05
-"HI","Hawaii",366130,196864,0.64,0.34
-"ID","Idaho",287021,554119,0.33,0.64
-"IL","Illinois",3471915,2446891,0.58,0.41
-"IN","Indiana",1242413,1729516,0.41,0.57
-"KS","Kansas",570323,771406,0.42,0.56
-"KY","Kentucky",772474,1326646,0.36,0.62
-"LA","Louisiana",856034,1255776,0.4,0.59
-"ME","Maine",435072,360737,0.53,0.44
-"MD","Maryland",1985023,976414,0.65,0.32
-"MA","Massachusetts",2382202,1167202,0.66,0.32
-"MS","Mississippi",539508,756789,0.41,0.58
-"MO","Missouri",1252873,1718245,0.41,0.57
-"MT","Montana",244786,343602,0.41,0.57
-"NE","Nebraska",374583,556846,0.39,0.59
-"NJ","New Jersey",2608258,1883242,0.57,0.41
-"NM","New Mexico",501614,401894,0.54,0.44
-"NY","New York",5230985,3244798,0.61,0.38
-"ND","North Dakota",114902,235595,0.32,0.65
-"OK","Oklahoma",503890,1020280,0.32,0.65
-"OR","Oregon",1340383,958448,0.57,0.4
-"RI","Rhode Island",307486,199922,0.59,0.39
-"SC","South Carolina",1091541,1385103,0.43,0.55
-"SD","South Dakota",150471,261043,0.36,0.62
-"TN","Tennessee",1143711,1852475,0.38,0.61
-"UT","Utah",560282,865140,0.38,0.58
-"VT","Vermont",242820,112704,0.66,0.31
-"VA","Virginia",2413568,1962430,0.54,0.44
-"WA","Washington",2369612,1584651,0.58,0.39
-"WV","West Virginia",235984,545382,0.3,0.69
-"WY","Wyoming",73491,193559,0.27,0.7
+"stateid","state","dem_this_margin","dem_votes","rep_votes","class"
+"AZ","Arizona",0.0031,1672143,1661686,"States that flipped from 2016"
+"FL","Florida",-0.0336,5297045,5668731,"Republican win"
+"GA","Georgia",0.0025,2474507,2461837,"States that flipped from 2016"
+"IA","Iowa",-0.082,759061,897672,"Republican win"
+"MI","Michigan",0.0278,2804040,2649852,"States that flipped from 2016"
+"MN","Minnesota",0.0711,1717049,1484048,"Democratic win"
+"NV","Nevada",0.0239,703486,669890,"Democratic win"
+"NH","New Hampshire",0.0735,424921,365654,"Democratic win"
+"NC","North Carolina",-0.0135,2684292,2758775,"Republican win"
+"OH","Ohio",-0.0803,2679165,3154834,"Republican win"
+"PA","Pennsylvania",0.0118,3459923,3378263,"States that flipped from 2016"
+"TX","Texas",-0.0558,5259126,5890347,"Republican win"
+"WI","Wisconsin",0.0063,1630866,1610184,"States that flipped from 2016"
+"AL","Alabama",-0.2546,849624,1441170,"Republican win"
+"AK","Alaska",-0.1006,153778,189951,"Republican win"
+"AR","Arkansas",-0.2762,423932,760647,"Republican win"
+"CA","California",0.2917,11109764,6005961,"Democratic win"
+"CO","Colorado",0.135,1804352,1364607,"Democratic win"
+"CT","Connecticut",0.2003,1080680,715291,"Democratic win"
+"DE","Delaware",0.1897,296268,200603,"Democratic win"
+"DC","District of Columbia",0.8675,317323,18586,"Democratic win"
+"HI","Hawaii",0.2946,366130,196864,"Democratic win"
+"ID","Idaho",-0.308,287021,554119,"Republican win"
+"IL","Illinois",0.1699,3471915,2446891,"Democratic win"
+"IN","Indiana",-0.1606,1242413,1729516,"Republican win"
+"KS","Kansas",-0.1465,570323,771406,"Republican win"
+"KY","Kentucky",-0.2594,772474,1326646,"Republican win"
+"LA","Louisiana",-0.1861,856034,1255776,"Republican win"
+"ME","Maine",0.0907,435072,360737,"Democratic win"
+"MD","Maryland",0.3321,1985023,976414,"Democratic win"
+"MA","Massachusetts",0.3346,2382202,1167202,"Democratic win"
+"MS","Mississippi",-0.1654,539508,756789,"Republican win"
+"MO","Missouri",-0.1539,1253014,1718736,"Republican win"
+"MT","Montana",-0.1637,244786,343602,"Republican win"
+"NE","Nebraska",-0.1915,374583,556846,"Republican win"
+"NJ","New Jersey",0.1594,2608335,1883274,"Democratic win"
+"NM","New Mexico",0.1079,501614,401894,"Democratic win"
+"NY","New York",0.2313,5241957,3250075,"Democratic win"
+"ND","North Dakota",-0.3336,114902,235595,"Republican win"
+"OK","Oklahoma",-0.3309,503890,1020280,"Republican win"
+"OR","Oregon",0.1609,1340383,958448,"Democratic win"
+"RI","Rhode Island",0.2077,307486,199922,"Democratic win"
+"SC","South Carolina",-0.1168,1091541,1385103,"Republican win"
+"SD","South Dakota",-0.2616,150471,261043,"Republican win"
+"TN","Tennessee",-0.2321,1143711,1852475,"Republican win"
+"UT","Utah",-0.2048,560282,865140,"Republican win"
+"VT","Vermont",0.3541,242820,112704,"Democratic win"
+"VA","Virginia",0.1011,2413568,1962430,"Democratic win"
+"WA","Washington",0.192,2369612,1584651,"Democratic win"
+"WV","West Virginia",-0.3894,235984,545382,"Republican win"
+"WY","Wyoming",-0.4338,73491,193559,"Republican win"

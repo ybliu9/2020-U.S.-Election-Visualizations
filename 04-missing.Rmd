@@ -10,22 +10,26 @@ library(naniar)
 ```
 
 ## Contribution Receipt Dataset
-The election voting results and the disbursements datasets do not have missing values, however, the contribution receipts dataset has 275 values missed in some columns.
+Among the dataset we used, only the contribution receipts dataset has missing values. A total of 16,969 values were missed in 4 columns which are `contribution_occupation`, `contribution_zip`, `contribution_last_name`, and `contribution_city`.
 
 ```{r, echo = F, message=F}
 # Import data from csv
 contribution_processed <- readr::read_csv(here::here("./data/clean/contribution_processed.csv"))
-
+contribution_processed<- contribution_processed %>%
+  select(1:5,7:9,11:14)
+  
 #n_miss(contribution_processed)
 #pct_miss(contribution_processed)
 #n_complete(contribution_processed)
 
-knitr::kable(colSums(is.na(contribution_processed)) %>% sort(decreasing = TRUE) %>% head(), caption = "Missing values",align = "l",full_width = F,table.attr = "style='width:30%;'")
+knitr::kable(data.frame(column = names(contribution_processed), count = colSums(is.na(contribution_processed)),row.names = NULL) 
+              %>% arrange(desc(count)) %>% filter(count>0), 
+      caption = "Missing values",align = "l",full_width = F,table.attr = "style='width:30%;'")
 
-m1<- gg_miss_upset(contribution_processed)
+m1<- gg_miss_upset(contribution_processed,nsets=4)
 m1
 ```
 
-In the processed contributions dataset, missing values only take 0.21% of the entire dataset with 946,704 observations of 14 attributes. As shown in the table and the upset plot above, missing values of the contributions dataset most frequently appear in columns including `contributor_employer`, `contributor_zip`, and `contributor_occupation`.
+In the processed contributions dataset, missing values take 1.79% of the entire dataset consisting 946,704 observations and 12 attributes. As shown in the table and the upset plot above, the `contribution_occupation` column has the most missing values. It is possible that contributors might not be comfortable providing their occupation information, and the dataset has more records where the `contribution_occupation` column was filled with `INFORMATION REQUESTED`. The missingness in this column seems to be a result of the registrar accidentally not putting an `INFORMATION REQUESTED` tag for these records. 
 
-The most popular pattern of missingness is only missing the contributor employer information, which 143 entries share this pattern. Besides there are also 35 entries missing both occupation and employer information, and 34 entries missing zip code information. 
+The vertical bars of the upset plot shows patterns of missingness and their frequencies. The most popular pattern is only missing the contributor occupation information, which 16,905 entries share this pattern. Besides there are also 25 entries only missing zip code information, 13 entries only missing last name information, 9 entries missing both occupation and zip information, 6 entries only missing city information, and one entry missing both city and occupation information. 

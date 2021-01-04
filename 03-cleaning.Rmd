@@ -7,15 +7,18 @@ library(tidyverse)
 library(socviz)
 ```
 
-## Election Result Data Transformation 
+Most of our small auxiliary datasets have been pre-processed by data providing authorities, hence, we focused on the pre-processing of the major datasets. Please go to our [github repo chapter](https://github.com/NeverGiveUpDXQ/2020-U.S.-Election-Visualizations/blob/main/03-cleaning.Rmd) to see code in detail.
 
-First, to compare historical popular vote results for **republicans** on the state level, we cleaned this dataset in following steps:
+## Election Result Data Transformation 
+For the election results data, we cleaned up two raw data: 1976-2016 historical election result and 2020 election popular vote share and vote margin. 
+
+First, to compare historical popular vote results for *republicans* on the state level, we cleaned this dataset in following steps:
 
 - Select columns we needed. i.e. `year`, `state`, `party` and `candidatevotes`.
-- Filter column `party`. i.e. only contains democrat and republican.
-- Add a new column `ratio`, we define **ratio = candidatevotes_xxx/(candidatevotes_democrat+candidatevotes_republican)**
+- Filter column `party`. i.e. only contains democrats and republicans.
+- Add a new column `ratio`, we define *ratio = candidatevotes_xxx/(candidatevotes_democrat+candidatevotes_republican)*
 - Filter column `party`. i.e. only leave republican.
-- Check data quality & revise it
+- Check duplicates and fix typos
 
 ```{r}
 history_data <- readr::read_csv(here::here("./data/raw/1976-2016-president.csv"))
@@ -32,31 +35,33 @@ history_election <- temp%>%
   dplyr::summarise(ratio = candidatevotes/sum(candidatevotes))%>%
   ungroup()
 
-# only choose republican records
-index <- temp$party == 'republican'
-history_election <- history_election[index,]
+history_election$party = temp$party
+history_election_wider <- history_election %>%
+  pivot_wider(names_from = party , values_from = ratio)
 
 # check our data
-#history_data %>%
+# history_election_wider %>%
 #    group_by(year, state) %>%
 #    summarise(n = n())%>%
 #    filter(n != 1)
 # after checking the number, we don't have any duplicate records 
 ```
 
-We then filter out all outliers and want to revise them. Note that it involves 2 state: **District of Columbia** and **Minnesota**. After checking data, we know that Republicans have never won D.C. and popular votes have always relatively low. So, it is reasonable. However, the share of *Minnesota* for Republican is abnormal. It is impossible that all voters chose one party.
+We then filtered all outliers which involved 3 states:**Utah**, **District of Columbia** and **Minnesota**. After checking data, we know that Republicans have never won D.C. and popular vote shares have always relatively low. So, it is reasonable. However, the share value of *Minnesota* for Republicans is abnormal as it is equal to 1. It is impossible that all voters chose one party.
+
 
 ```{r}
 # check for outliers
-# boxplot(history_data$ratio)
+# boxplot(history_election$ratio)
 # It's impossible if share = 1
 # So, in this step, we filter those outlier `ratio`
 
 history_election %>%
-    filter(ratio %in% boxplot.stats(history_election$ratio)$out)
+  filter(ratio %in% boxplot.stats(history_election$ratio)$out)%>%
+  mutate(ratio = round(ratio,4))
 ```
 
-So, then we look back raw data. We notice that in those years, party name for Dem. is *democratic-farmer-labor* rather than *democrat*. 
+Going back to the raw data, we noticed that in those years, party name for Dem. is *democratic-farmer-labor* rather than *democrat*. 
 ```{r}
 history_data %>%
   filter(year %in% c(2000,2004,2012)) %>%
@@ -79,20 +84,23 @@ history_election <- temp1%>%
   dplyr::summarise(ratio = candidatevotes/sum(candidatevotes))%>%
   ungroup()
 
-# only choose republican records
-index <- temp1$party == 'republican'
-history_election <- history_election[index,]
+history_election$party = temp1$party
+
+history_election_wider <- history_election %>%
+  pivot_wider(names_from = party , values_from = ratio)%>%
+  mutate(dem_this_margin = round(democrat-republican,3))%>%
+  select(c(year,state,dem_this_margin))
 ```
 
 ```{r}
-write.csv(history_election, file = here::here("data", "clean", "1976-2016election.csv"),row.names=FALSE)
+write.csv(history_election_wider, file = here::here("data", "clean", "1976-2016election.csv"),row.names=FALSE)
 ```
 
 After cleaning, it contains 3 columns and 561 records.
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(data.frame(
-                description = c('year','state','ratio'),
-                category = c("Which election year?","State name","Share of popular votes for Rep.")
+                description = c('year','state','dem_this_margin'),
+                category = c("Which election year?","State name","candidate votes for democrat(%) - candidate votes for republican(%)")
               ), 
              col.names = c('Column','Description'),
              row.names = F,font_size = 10)
@@ -121,29 +129,48 @@ elections_historic_new <- rbind(elections_historic_new,data2020)
 write.csv(elections_historic_new, file = here::here("data", "clean", "elections_historic_new.csv"),row.names=FALSE)
 ```
 
+Next, we cleaned up the U.S. State Level Popular Vote Results of 2020 Presidential Election in following steps:
+
+- Select columns we need. i.e. `stateid`, `state`, `dem_this_margin`, `dem_votes`, `rep_votes`.
+- Add a new column `class` to indicate if it is `States that flipped from 2016`, `Democrats won`, or `Republicans won`. We define a state as `States that flipped from 2016` if it is one of **Arizona**, **Wisconsin**, **Michigan**, **Pennsylvania**, **Georgia**. Otherwise, we compared their votes for Democrats and votes for Republicans to determine their class.
+
+```{r, eval = FALSE, echo=FALSE}
+president2020 <- read_csv('./data/raw/Popular vote backend_1216.csv') %>%
+  filter(state %in% usmap::statepop$full)%>%
+  # Make column `state` consistent & we don't consider Maine/Nebraska districts
+  select(stateid,state,dem_this_margin,dem_votes,rep_votes) %>%
+  # we classfiy 3 levels: Dem. won, Rep. won and flipped states
+  mutate(class = ifelse(stateid %in% c('AZ', 'WI', 'MI', 'PA', 'GA'),'States that flipped from 2016',ifelse(dem_votes>rep_votes,'Democrats won','Republicans won')))
+
+write.csv(president2020, "./data/clean/president2020.csv",row.names = FALSE)
+```
+
 
 ## Contribution Data Transformation
 
 For the contributions receipt dataset, we extracted only relevant columns as described in Data Sources Chapter. We changed the data types for several columns to factorize categorical variables like `committee_name` and to store `contribution_receipt_date` in a datetime format for later visualizations. We filtered the `contributor_state` column to only keep the 50 states of the US plus D.C. and eliminated noise from funds raised from foreign countries. Also, we unified different formats in the `contributor_suffix` column to eliminate the redundant factor levels. To better scale the contributions, we focused only on individual contributions, thus we applied the `entity_type == "IND"` to get rid of the contributions from committees, PACs, and organizations. 
+
 To save file-reading time and to meet analysis and visualization needs, we made multiple aggregations on different dimensions. We derived a data frame *contribution_by_date* from aggregating the processed data by `contribution_receipt_date`, and the sum of `contribution_receipt_amount` was calculated for this aggregated view. Additionally, we extracted the contributors' job titles from the column `contributor_occupation`, cleaned the texts following steps including: 
-  - Excluded records of uninformational or ineffective strings. For example, we got rid of records equal to "INFORMATION REQUESTED", "-", "NA", "UNKNOWN", etc.
-  - Gathered column values to a single string separated by blank spaces. We saved some two-word job titles like "SELF EMPLOYED" and "REAL ESTATE" with underlines to avoid them being separated apart.
-  - Inserted spaces to divide words that were sticked together. For example, records like "WRITEREDITORTEACHER" were converted to "WRITER EDITOR TEACHER" with spaces in between.
-  - Split the string to a vector of single words.
-  - Removed unnecessary punctuations and numbers.
-  - Fixed detectable typos and abbreviations
-  - Removed uninformational words stored in the [stop words](https://www.rdocumentation.org/packages/tidytext/versions/0.2.6/topics/stop_words) dataset of package `tidytext`. For example, words like "the", "of", and "and" do not add any insight but will distort the frequency distribution. 
+
+- Excluded records of uninformational or ineffective strings. For example, we got rid of records equal to "INFORMATION REQUESTED", "-", "NA", "UNKNOWN", etc.
+- Gathered column values to a single string separated by blank spaces. We saved some two-word job titles like "SELF EMPLOYED" and "REAL ESTATE" with underlines to avoid them being separated apart.
+- Inserted spaces to divide words that were sticked together. For example, records like "WRITEREDITORTEACHER" were converted to "WRITER EDITOR TEACHER" with spaces in between.
+- Split the string to a vector of single words.
+- Removed unnecessary punctuations and numbers.
+- Fixed detectable typos and abbreviations
+- Removed uninformational words stored in the [stop words](https://www.rdocumentation.org/packages/tidytext/versions/0.2.6/topics/stop_words) dataset of package `tidytext`. For example, words like "the", "of", and "and" do not add any insight but will distort the frequency distribution. 
 Finally, the counts for each unique word were calculated and saved in a separate .csv file.
 
-```{r, eval=FALSE}
+
+```{r, echo=FALSE,eval=FALSE}
 contributions1 <- readr::read_csv(here::here("./data/raw/contribution_bind.csv"))
 
 # Extract columns
 DataDescription<- readr::read_csv(here::here("./data/DatasetDescription.csv"))
-columns <- as.vector(DataDescription[13:26,1])
+columns <- as.vector(DataDescription[13:25,1])
 
 contributions1<- contributions1 %>%
-  select(columns[1:14])
+  select(columns[1:12])
 
 # Change data types and factorize categorical variables
 contributions1$committee_name <- as.factor(contributions1$committee_name)
@@ -155,27 +182,13 @@ state<- c("AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL",
 
 contributions1 <- contributions1[contributions1$contributor_state %in% state,]
 
-# Update suffix
-contributions1$contributor_suffix%>%
-  unique()
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "JR.", "JR", contributor_suffix))
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "JR.,", "JR", contributor_suffix))
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "7/18/", "", contributor_suffix))
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "SR.", "SR", contributor_suffix))
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "M.D.", "MD", contributor_suffix))
-contributions1<- contributions1 %>% 
-  mutate(contributor_suffix = ifelse(contributor_suffix == "ESQ.", "ESQ", contributor_suffix))
-
 #filter individual contributions
 contributions1<- contributions1[contributions1$entity_type == "IND",]
 
 write.csv(contributions1, file = here::here("data", "clean", "contribution_processed.csv"),row.names=FALSE)
+```
 
+```{r,eval=FALSE,echo=FALSE}
 #Aggregations
 contribution_by_date <-contributions1[order(contributions1$contribution_receipt_date, decreasing= F),] %>% 
   select(committee_name,contribution_receipt_date,contribution_receipt_amount) %>%
@@ -289,7 +302,7 @@ oc_trump_count <- GetOccupation("TRUMP")
 
 
 ## Disbursement Data Transformation
-The first step we did is to extract the necessary columns that are mentioned in the previous chapter. Then we noticed that in the `disbursement_purpose_category`, there is a `OTHER` top coding is dominant the dataset, hence it would not provide us lots of interesting information to analyze. Below is the original data distribution for the `disbursement_purpose_category` column:
+We first extracted the necessary columns that are mentioned in the previous chapter. Then we noticed that in the `disbursement_purpose_category`, there is a `OTHER` top coding dominates the dataset, hence it would not provide us lots of interesting information to analyze. Below is the original data distribution for the `disbursement_purpose_category` column:
 ```{r}
 # Import data from csv
 exp_raw <- readr::read_csv(here::here("./data/raw/schedule_b-2020-11-18T20_02_30.csv"))
@@ -315,7 +328,7 @@ ggplot(exp_processed) +
         legend.position="bottom")
 ```
 
-But since we have another column which is the disbursement_description, we can use this information to decode this top code. We examined the frequently mentioned terms in `disbursement_description` among those marked as `OTHER` and manually categorize them into existing or new categories that would fit the record type better. Below is a conversion table that we used to convert the columns. The pattern we are looking for in the description ar based on high frequent terms as well as their word stems and abbreviations. The conversion are done based on the order of this list. 
+But since we have another column which is the `disbursement_description`, we used this information to decode this top code. We examined the frequently mentioned terms in `disbursement_description` among those marked as `OTHER` and manually categorize them into existing or new categories that would fit the record type better. Below is a conversion table that we used to convert the columns. The pattern we are looking for in the description ar based on high frequent terms as well as their word stems and abbreviations. The conversion are done based on the order of this list. 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(data.frame(
                 description = c("BANK|PROCESS","CONSULT",

@@ -17,16 +17,14 @@ entity_type,Contributor entity abbr. (chr)
 entity_type_desc,Contributor entity (chr)
 contributor_name,Full name of contributor (chr)
 contributor_last_name,Last name of contributor (chr)
-contributor_suffix,Suffix of contributor (chr)
 contributor_city,City of contributor's address (chr)
 contributor_state,State of contributor's address(chr)
 contributor_zip,Zip code of contributor's address (chr)
-contributor_employer,Name of contributor's employer (chr)
 contributor_occupation,Contributor's occupation (chr)
 contribution_receipt_date,Receipt date (date)
 contribution_receipt_amount,Receipt amount (num)
 contributor_aggregate_ytd,Contributor aggregated contribution of this year (num)
-… (Omit 63 unused columns),
+… (Omit 65 unused columns),
 schedule_b-2020-11-08T16_10_30.csv,
 Column Name,Description
 committee_name,Presidential Committee Name (chr)
@@ -39,3 +37,28 @@ recipient_zip,Zip code of disbursement recipient's address (chr)
 recipient_state,State of disbursement recipient's address (chr)
 recipient_name,Entity name of disbursement recipient (chr)
 … (Omit 70 unused columns),
+,
+Column Name,Description
+stateid,State Postal Codes (chr)
+state,State Name (chr)
+dem_votes,Votes for Biden (num)
+rep_votes,Votes for Trump (num)
+dem_percent,Vote Percentage for Biden (num)
+rep_percent,Vote Percentage for Trump (num)
+,
+Column Name,Description
+year,Election Year (num)
+state,State Name (chr)
+party,Party Name (chr)
+candidatevotes,Popular Votes (num)
+,
+Column Name,Description
+state,State Name (chr)
+totalRegistered,Total number of people registered (num)
+Pop,Total state population (num)
+registeredPerc,Percent of peoplewho are registered voters (num)
+asOf,Last update date (date)
+,
+Column Name,Description
+ec_pct,Winner's share of elctoral college vote. (Range is 0 to 1. ) (num)
+popular_pct,Winner's share of popular vote. (Range is 0 to 1. ) (num)
